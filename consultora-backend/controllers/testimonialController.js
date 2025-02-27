@@ -1,9 +1,9 @@
-const testimonials = require("../models/testimonial");
+const { Testimonial } = require("../models");
 
 // Obtener todos los testimonios
 const getTestimonials = async (req, res) => {
   try {
-    const data = await testimonials.getTestimonials();
+    const data = await Testimonial.findAll();
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los testimonios." });
@@ -19,7 +19,7 @@ const addTestimonial = async (req, res) => {
   }
 
   try {
-    const newTestimonial = await testimonials.addTestimonial(nombre, mensaje);
+    const newTestimonial = await Testimonial.create({ nombre, mensaje });
     res.status(201).json(newTestimonial);
   } catch (error) {
     res.status(500).json({ error: "Error al guardar el testimonio." });

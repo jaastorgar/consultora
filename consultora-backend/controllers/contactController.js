@@ -1,9 +1,9 @@
-const contactForm = require("../models/contactForm");
+const { ContactForm } = require("../models");
 
 // Obtener todos los contactos
 const getContacts = async (req, res) => {
   try {
-    const contacts = await contactForm.getContacts();
+    const contacts = await ContactForm.findAll();
     res.json(contacts);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los contactos." });
@@ -19,10 +19,10 @@ const addContact = async (req, res) => {
   }
 
   try {
-    const newContact = await contactForm.addContact(nombre, email, telefono, mensaje);
+    const newContact = await ContactForm.create({ nombre, email, telefono, mensaje });
     res.status(201).json(newContact);
   } catch (error) {
-    res.status(500).json({ error: "Error al guardar el contacto." });
+    res.status(500).json({ error: "Error al guardar el contacto en la base de datos." });
   }
 };
 
