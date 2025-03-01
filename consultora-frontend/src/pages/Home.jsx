@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
-// Animación de entrada
+// Animación de entrada suave
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -13,18 +14,18 @@ const fadeIn = keyframes`
   }
 `;
 
-// Contenedor principal
+// Contenedor principal con colores ecológicos
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   font-family: "Poppins", sans-serif;
-  background: #f9f9f9;
+  background: #f0fff0; /* Verde claro ecológico */
   color: #333;
 `;
 
-// Hero Section
+// Hero Section con transformación digital
 const HeroSection = styled.div`
   width: 100%;
   height: 70vh;
@@ -32,7 +33,7 @@ const HeroSection = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 102, 204, 0.8)), url('/ruta-de-tu-imagen.jpg') center/cover no-repeat;
+  background: linear-gradient(135deg, rgba(0, 102, 51, 0.9), rgba(0, 204, 102, 0.8)), url('/ruta-de-tu-imagen.jpg') center/cover no-repeat;
   text-align: center;
   padding: 2rem;
 `;
@@ -49,7 +50,6 @@ const HeroSubtitle = styled.p`
   color: #f1f1f1;
   max-width: 700px;
   margin-top: 1rem;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
 `;
 
 // Sección "Sobre Nosotros"
@@ -61,7 +61,6 @@ const AboutSection = styled.section`
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   animation: ${fadeIn} 1s ease-in-out;
-  text-align: center;
 `;
 
 const TeamGrid = styled.div`
@@ -74,7 +73,7 @@ const TeamGrid = styled.div`
 const TeamMember = styled.div`
   width: 30%;
   padding: 1.5rem;
-  background: #ffffff;
+  background: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   text-align: center;
@@ -128,19 +127,14 @@ const VisionMissionGrid = styled.div`
 const VisionMissionCard = styled.div`
   width: 45%;
   padding: 2rem;
-  background: #ffffff;
+  background: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-  }
 `;
 
 const CardIcon = styled.div`
   font-size: 3rem;
-  color: #0056b3;
+  color: #006400;
   margin-bottom: 1rem;
 `;
 
@@ -154,24 +148,33 @@ const CardText = styled.p`
   color: #555;
 `;
 
-// Testimonios
+// Sección de testimonios dinámicos
 const TestimonialsSection = styled.section`
-  background: #eef1f6;
+  background: #e0ffe0;
   padding: 3rem;
   text-align: center;
   animation: ${fadeIn} 1.4s ease-in-out;
+  border-radius: 10px;
+  width: 80%;
+  margin: 2rem auto;
 `;
 
-// Call To Action
+const TestimonialText = styled.p`
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #333;
+  transition: opacity 1s ease-in-out;
+  opacity: ${(props) => (props.visible ? 1 : 0)};
+`;
+
 const CTASection = styled.section`
   text-align: center;
   margin: 3rem 0;
-  animation: ${fadeIn} 1.6s ease-in-out;
 `;
 
 const CTAButton = styled.button`
-  background: #ff6600;
-  color: #ffffff;
+  background: #008000;
+  color: white;
   padding: 1rem 2rem;
   font-size: 1.2rem;
   border: none;
@@ -180,39 +183,51 @@ const CTAButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    background: #e65c00;
+    background: #004d00;
   }
 `;
 
 const Home = () => {
+  const [testimonios, setTestimonios] = useState([]);
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+  const navigate = useNavigate();
+
+  // Cargar testimonios aprobados
+  useEffect(() => {
+    fetch("http://localhost:5000/api/testimonials")
+      .then((res) => res.json())
+      .then((data) => setTestimonios(data.filter((t) => t.aprobado)))
+      .catch((err) => console.error("Error cargando testimonios:", err));
+  }, []);
+
+  // Rotación de testimonios
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIndex((prevIndex) => (prevIndex + 1) % testimonios.length);
+        setVisible(true);
+      }, 1000);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [testimonios]);
+
   return (
     <Container>
       <HeroSection>
-        <HeroTitle>Transforma tu Negocio con Nosotros</HeroTitle>
-        <HeroSubtitle>Soluciones estratégicas para maximizar tu crecimiento y éxito.</HeroSubtitle>
+        <HeroTitle>Transforma tu Negocio con Innovación</HeroTitle>
+        <HeroSubtitle>Soluciones estratégicas para un futuro sostenible y digital.</HeroSubtitle>
       </HeroSection>
 
       <AboutSection>
         <h2>Sobre Nosotros</h2>
-        <p>Somos una consultora comprometida con el éxito de nuestros clientes.</p>
+        <p>Somos una consultora comprometida con la sostenibilidad y la transformación digital.</p>
         <TeamGrid>
           <TeamMember>
             <MemberImage src="/ruta-imagen-socio1.jpg" alt="Socio 1" />
             <MemberName>Juan Pérez</MemberName>
             <MemberRole>CEO & Estratega</MemberRole>
-            <MemberDescription>Especialista en planificación empresarial y liderazgo estratégico.</MemberDescription>
-          </TeamMember>
-          <TeamMember>
-            <MemberImage src="/ruta-imagen-socio2.jpg" alt="Socio 2" />
-            <MemberName>Ana Gómez</MemberName>
-            <MemberRole>COO & Finanzas</MemberRole>
-            <MemberDescription>Encargada de la optimización financiera y toma de decisiones clave.</MemberDescription>
-          </TeamMember>
-          <TeamMember>
-            <MemberImage src="/ruta-imagen-socio3.jpg" alt="Socio 3" />
-            <MemberName>Carlos Ramírez</MemberName>
-            <MemberRole>CTO & Tecnología</MemberRole>
-            <MemberDescription>Experto en digitalización y desarrollo de soluciones innovadoras.</MemberDescription>
           </TeamMember>
         </TeamGrid>
       </AboutSection>
@@ -220,25 +235,19 @@ const Home = () => {
       <VisionMissionSection>
         <VisionMissionGrid>
           <VisionMissionCard>
-            <CardIcon>🌎</CardIcon>
             <CardTitle>Nuestra Visión</CardTitle>
-            <CardText>Ser referentes en innovación y crecimiento empresarial, ofreciendo soluciones estratégicas que impulsen el éxito de nuestros clientes.</CardText>
-          </VisionMissionCard>
-          <VisionMissionCard>
-            <CardIcon>🚀</CardIcon>
-            <CardTitle>Nuestra Misión</CardTitle>
-            <CardText>Ayudar a las empresas a crecer a través de estrategias innovadoras, optimización de procesos y digitalización.</CardText>
+            <CardText>Ser líderes en innovación y sostenibilidad empresarial.</CardText>
           </VisionMissionCard>
         </VisionMissionGrid>
       </VisionMissionSection>
 
       <TestimonialsSection>
         <h2>Testimonios</h2>
-        <p>"Gracias a esta consultora, mi empresa creció un 40%."</p>
+        {testimonios.length > 0 && <TestimonialText visible={visible}>{testimonios[index].mensaje}</TestimonialText>}
       </TestimonialsSection>
 
       <CTASection>
-        <CTAButton>Contáctanos</CTAButton>
+        <CTAButton onClick={() => navigate("/dejar-testimonio")}>Dejar un Testimonio</CTAButton>
       </CTASection>
     </Container>
   );

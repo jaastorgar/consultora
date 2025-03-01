@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Servicios from "./pages/Servicios";
 import Contacto from "./pages/Contacto";
+import DejarTestimonio from "./pages/DejarTestimonio";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/servicios" element={<Servicios />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/dejar-testimonio" element={<DejarTestimonio />} />
         </Routes>
       </Content>
       <Footer />
